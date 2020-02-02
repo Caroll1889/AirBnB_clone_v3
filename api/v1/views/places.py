@@ -27,7 +27,7 @@ def Places_Get(city_id):
     return jsonify(place_list), 200
 
 
- @app_views.route('/places/<place_id>', methods=['GET'], strict_slashes=False)
+@app_views.route('/places/<place_id>', methods=['GET'], strict_slashes=False)
 def Place_Get(place_id):
     """ Retrieves a Place object """
     place = storage.get('Place', place_id)
