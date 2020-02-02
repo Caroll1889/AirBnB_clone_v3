@@ -80,4 +80,3 @@ def User_Put(user_id):
         setattr(data, key, value)
     data.save()
     return jsonify(data.to_dict()), 200
-    
