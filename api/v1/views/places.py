@@ -14,17 +14,19 @@ from flask import Flask, jsonify, abort, request
 def Places_Get(city_id):
     """Retrieves the list of all Place objects of a City """
 
-    data = storage.all('Place')
-    place = storage.get("City", city_id)
-    place_list = []
+    city = storage.get("City", city_id)
 
-    if place is None:
+    if city is None:
         abort(404)
-    cities_id = "City.{}".format(city_id)
+
+    data = storage.all('Place')
+    places_list = []
+
     for key, value in data.items():
-        if value.city_id == cities_id:
-            place_list.append(value.to_dict())
-    return jsonify(place_list), 200
+        if value.city_id == city_id:
+            places_list.append(value.to_dict())
+
+    return jsonify(places_list), 200
 
 
 @app_views.route('/places/<place_id>', methods=['GET'], strict_slashes=False)
