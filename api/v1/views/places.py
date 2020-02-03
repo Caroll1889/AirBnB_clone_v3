@@ -22,12 +22,12 @@ def Places_Get(city_id):
         abort(404)
     cities_id = "City.{}".format(city_id)
     for key, value in data.items():
-        if value.city_id == city_id
-        place_list.append(value.to_dict())
+        if value.city_id == cities_id:
+            place_list.append(value.to_dict())
     return jsonify(place_list), 200
 
 
- @app_views.route('/places/<place_id>', methods=['GET'], strict_slashes=False)
+@app_views.route('/places/<place_id>', methods=['GET'], strict_slashes=False)
 def Place_Get(place_id):
     """ Retrieves a Place object """
     place = storage.get('Place', place_id)
