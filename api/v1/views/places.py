@@ -3,8 +3,8 @@
 
 from api.v1.views import app_views
 from models import storage
-from models.state import State
 from models.city import City
+from models.user import User
 from models.place import Place
 from flask import Flask, jsonify, abort, request
 
@@ -14,17 +14,19 @@ from flask import Flask, jsonify, abort, request
 def Places_Get(city_id):
     """Retrieves the list of all Place objects of a City """
 
-    data = storage.all('Place')
-    place = storage.get("City", city_id)
-    place_list = []
+    city = storage.get("City", city_id)
 
-    if place is None:
+    if city is None:
         abort(404)
-    cities_id = "City.{}".format(city_id)
+
+    data = storage.all('Place')
+    places_list = []
+
     for key, value in data.items():
-        if value.city_id == cities_id:
-            place_list.append(value.to_dict())
-    return jsonify(place_list), 200
+        if value.city_id == city_id:
+            places_list.append(value.to_dict())
+
+    return jsonify(places_list), 200
 
 
 @app_views.route('/places/<place_id>', methods=['GET'], strict_slashes=False)
@@ -50,13 +52,12 @@ def Places_Delete(place_id):
     return jsonify({}), 200
 
 
-@app_views.route('cities/<city_id>/places', methods=['POST'],
+@app_views.route('/cities/<city_id>/places', methods=['POST'],
                  strict_slashes=False)
 def Places_Post(city_id):
     """ Create a Place """
     data_req = request.get_json()
     data_city = storage.get('City', city_id)
-    data_user = storage.get('User', user_id)
 
     if data_city is None:
         abort(404)
@@ -64,12 +65,16 @@ def Places_Post(city_id):
         return jsonify({"message": "Not a JSON"}), 400
     if "user_id" not in data_req:
         return jsonify({"message": "Missing user_id"}), 400
-    if data_user is None:
-        abort(404)
+    else:
+        data_user = storage.get('User', data_req["user_id"])
+        if data_user is None:
+            print("entro", data_req["user_id"])
+            abort(404)
     if "name" not in data_req:
         return jsonify({"message": "Missing name"}), 400
 
-    data_req.update({"city_id": city_id})
+    data_req["city_id"] = city_id
+    print(data_req)
     new_place = Place(**data_req)
     new_place.save()
     return jsonify(new_place.to_dict()), 201
