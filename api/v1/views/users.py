@@ -52,7 +52,7 @@ def Users_Post():
 
     if not data:
         return jsonify({"message": "Not a JSON"}), 400
-    if "name" not in data:
+    if "email" not in data:
         return jsonify({"message": "Missing email"}), 400
     if "password" not in data:
         return jsonify({"message": "Missing password"}), 400
